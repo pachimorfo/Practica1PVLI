@@ -30,11 +30,13 @@ Scroll.prototype.canBeUsed = function (mp) {
   // al coste del hechizo.
 };
 
-function Effect(variations) {
-	this.variations = variations;
+function Effect(variations) {//efecto.properties.hp / efecto.hp
 
+	this.[variations] = variations[variations];
+//	this.hp = variations[];
+			//variations[] = variations || {};
   //(HECHO)Copia las propiedades que se encuentran en variations como propiedades de
-  // este objeto.
+  // este objeto. //Como hacemos para pasar variationsa effecto?
 }
 
 module.exports = {
