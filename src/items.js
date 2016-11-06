@@ -32,9 +32,11 @@ Scroll.prototype.canBeUsed = function (mp) {
 
 function Effect(variations) {//efecto.properties.hp / efecto.hp
 
-	this.[variations] = variations[variations];
-//	this.hp = variations[];
-			//variations[] = variations || {};
+  for (var name in variations){
+      this[name] = variations[name];
+
+  }
+
   //(HECHO)Copia las propiedades que se encuentran en variations como propiedades de
   // este objeto. //Como hacemos para pasar variationsa effecto?
 }

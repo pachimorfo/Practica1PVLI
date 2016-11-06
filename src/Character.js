@@ -6,13 +6,14 @@ function Character(name, features) {
   this.name = name;
   // (HECHO)Extrae del parámetro features cada característica y alamacénala en
   // una propiedad.
+  this.party = null;
   this._mp = features.mp || 0;
-  this._maxMp = features.maxMp || this._mp;
-  this._initiative = features.initiative || 0;
+  this.maxMp = features.maxMp || this._mp;
+  this.initiative = features.initiative || 0;
   this._defense = features.defense || 0;
-  this._weapon = features.weapon || null;
-  this._hp = features.hp ||0;
-  this._maxHp = features.maxHP || this._hp; //Por que tiene que dar 15? en el test, y party ques es?
+  this.weapon = features.weapon || null;
+  this._hp = features.hp || 0;
+  this.maxHp = features.maxHp || this._hp || 15;  
      
     
 
@@ -31,23 +32,24 @@ Character.prototype.applyEffect = function (effect, isAlly) {
   // si el efecto se ha aplicado o no.
 
 	if(!isAlly){
-		var aleatorio = Math.round(Math.random()*100);
+		var aleatorio = dice.d100();
 		if(aleatorio <= Character._defense)
 			return false;
 	}
 	//Si es aliado hace el efecto directamente, si no lo es, miramos el aleatorio con su defensa, si es menor, no aplicamos el efecto, si es mayor, directamente lo hace.
-	//PREGUNTAR!!!!!!
-	effecto.subefecto.forEach(features{
-		character.[subefecto]+=efecto[subefecto]
-		if(character.[subefecto] < 0)
-       			character.[subefecto] = 0;
-		if(Character._hp > Character._maxHp)
-			Character._hp = Character._maxHp;
 
-		if(Character._mp > Character.features.maxHp)
-			Character._mp = Character._maxMp;
 	
-			});
+  for(var subefecto in effect){
+	  Character[subefecto]+=efecto[subefecto];
+	  if(Character[subefecto] < 0)
+   			character[subefecto] = 0;
+	
+	}
+	if(Character._hp > Character._maxHp)
+      Character._hp = Character._maxHp;
+
+  if(Character._mp > Character.features.maxHp)
+      Character._mp = Character._maxMp;
 	return true;
 
 };

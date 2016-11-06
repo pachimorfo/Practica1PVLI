@@ -36,7 +36,7 @@ describe('Entities library', function () {
     mockery.deregisterMock('./dice');
   });
 
-  it('includes types for characters, items, weapons and effects.', function () {
+  xit('includes types for characters, items, weapons and effects.', function () {
     expect(Character).toEqual(jasmine.any(Function));
     expect(Item).toEqual(jasmine.any(Function));
     expect(Weapon).toEqual(jasmine.any(Function));
@@ -44,7 +44,7 @@ describe('Entities library', function () {
     expect(Effect).toEqual(jasmine.any(Function));
   });
 
-  xdescribe('Effect type', function () {
+  describe('Effect type', function () {
 
     it('allows specify arbitrary feature alterations.', function () {
       var effect = new Effect({
