@@ -7,7 +7,9 @@ function Item(name, effect) {
 
 function Weapon(name, damage, extraEffect) {
   extraEffect = extraEffect || new Effect({});
-  Item.apply(this, [name,damage]);
+  var efectos = Object.assign(extraEffect, new Effect({hp:-damage}));
+  Item.apply(this, [name, efectos]);
+  
   // (HECHO)Haz que Weapon sea subtipo de Item haciendo que llame al constructor de
   // de Item.
 }
@@ -24,17 +26,17 @@ Scroll.prototype = Object.create(Item.prototype);
 Scroll.prototype.constructor = Scroll;
 
 Scroll.prototype.canBeUsed = function (mp) {
-	return (mp>=this.cost);
+	return (mp >= this.cost);
 
   // El pergamino puede usarse si los puntos de maná son superiores o iguales
   // al coste del hechizo.
 };
 
 function Effect(variations) {//efecto.properties.hp / efecto.hp
-	var aux = variations;
+for (var name in variations){
+      this[name] = variations[name];
+ }
 
-	this.hp = aux[0];
-			//variations[] = variations || {};
   //(HECHO)Copia las propiedades que se encuentran en variations como propiedades de
   // este objeto. //Como hacemos para pasar variationsa effecto?
 }
