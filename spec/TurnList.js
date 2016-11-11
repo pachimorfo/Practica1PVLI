@@ -21,6 +21,7 @@ describe('The TurnList type', function () {
       c: new FakeCharacter('monsters', 10)
     };
 
+
     turnList = new TurnList();
     turnList.reset(characters);
   });
@@ -31,7 +32,7 @@ describe('The TurnList type', function () {
     expect(turnList.list).toEqual(['c', 'b', 'a']);
   });
 
-  xit('accepts a set of characters and sort them by inititative.', function () {
+  it('accepts a set of characters and sort them by inititative.', function () {
     var turn = turnList.next();
 
     expect(turn.number).toBe(1);
@@ -42,7 +43,7 @@ describe('The TurnList type', function () {
     expect(turnList.activeCharacterId).toBe('c');
   });
 
-  xit('ignore all dead characters', function () {
+  it('ignore all dead characters', function () {
     characters.c._isDead = true;
     characters.b._isDead = true;
     var turn = turnList.next();
@@ -55,7 +56,7 @@ describe('The TurnList type', function () {
     expect(turnList.activeCharacterId).toBe('a');
   });
 
-  xit('starts over when reaching the end of the list.', function () {
+  it('starts over when reaching the end of the list.', function () {
     turnList.next();
     turnList.next();
     turnList.next();
@@ -64,7 +65,6 @@ describe('The TurnList type', function () {
     expect(turn.number).toBe(4);
     expect(turn.party).toBe(characters.c.party);
     expect(turn.activeCharacterId).toBe('c');
-t
     expect(turnList.turnNumber).toBe(4);
     expect(turnList.activeCharacterId).toBe('c');
   });
