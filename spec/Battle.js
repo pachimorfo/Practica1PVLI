@@ -153,7 +153,7 @@ describe('Battle type', function () {
 
   });
 
-  xdescribe('Battle actions', function () {
+  describe('Battle actions', function () {
 
     it('are 3: attack, defend and cast.', function () {
       battle.on('turn', function () {

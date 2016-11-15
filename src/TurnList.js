@@ -1,10 +1,11 @@
 'use strict';
 
-function TurnList() {};
+function TurnList() {}
+
+
 
 TurnList.prototype.reset = function (charactersById) {
   this._charactersById = charactersById || {};
-
   this._turnIndex = -1;
   this.turnNumber = 0;
   this.activeCharacterId = null;
@@ -31,7 +32,6 @@ TurnList.prototype.next = function () {
   turn.number = nturn;
   turn.party = this._charactersById[this.activeCharacterId].party;
   turn.activeCharacterId = this.activeCharacterId;
-  
   return turn;
 };
 
@@ -40,29 +40,21 @@ TurnList.prototype._sortByInitiative = function () {
   // función de ordenación!
   var characts = [];
   var lista = [];
-  for(var objeto in this._charactersById){
-       characts.push({name: objeto, 
-	 initve: this._charactersById[objeto].initiative});
-	      	       
-  }; 
+  for (var objeto in this._charactersById){
+    characts.push({name: objeto,
+      initve: this._charactersById[objeto].initiative});  	       
+  } 
   characts.sort(function(a, b){
-     if(a.initve > b.initve)
-  	return -1;	  
-     if(a.initve < b.initve)
-  	return 1;
-
-     //a es igual a b
-     return 0;  
-  
+  if (a.initve > b.initve)
+  return -1;	  
+  if (a.initve < b.initve)
+  return 1;
+  else
+ return 0;
   });
-
   for (var i in characts){
-  	lista.push(characts[i].name);
-  
+  lista.push(characts[i].name);
   }
- 
   return lista;
-
 };
-
 module.exports = TurnList;

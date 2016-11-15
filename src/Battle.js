@@ -82,12 +82,41 @@ Battle.prototype._extractCharactersById = function (parties) {
 
   function assignParty(characters, party) {
     // Cambia la party de todos los personajes a la pasada como parámetro.
+    for (var name in characters){
+      characters[name].party = party;
+    }
   }
 
   function useUniqueName(character) {
     // Genera nombres únicos de acuerdo a las reglas
     // de generación de identificadores que encontrarás en
     // la descripción de la práctica o en la especificación.
+    /*Recorre todos los bandos. Por cada bando:
+      Recorre todos los miembros. Por cada miembros:
+      Recupera el nombre del personaje y comprueba si está en el histograma de nombres.
+      Si no está, añádelo con valor cero.
+      Recupera el valor para nombre en el histograma de nombres.
+      Si es 0, el identificador es el nombre.
+      Si es mayor que 0, el identificador es el nombre seguido de un espacio y el valor del histograma más uno.
+      Incrementa el valor del histograma en 1.
+      Asigna al personaje ese identificador.
+    */
+    for (var i = 0; i < partyIds.lenght; i++) {
+       if (partyIds[i] === character.party){
+          var party = partyIds[i];
+          for (var member in party){
+            var name = party[member].name;
+
+
+          }
+
+
+       }
+    }
+    
+
+
+
   }
 };
 
@@ -133,11 +162,18 @@ Battle.prototype._checkEndOfBattle = function () {
 
   function isAlive(character) {
     // Devuelve true si el personaje está vivo.
+    return (!character.isDead);
   }
 
   function getCommonParty(characters) {
     // Devuelve la party que todos los personajes tienen en común o null en caso
     // de que no haya común.
+    var party = characters.party;
+    for(var name in characters){
+      if(character[name].party !== party)
+        return null;
+    }
+    return party;
   }
 };
 
@@ -154,9 +190,17 @@ Battle.prototype._onAction = function (action) {
   this._action = {
     action: action,
     activeCharacterId: this._turns.activeCharacterId
+
   };
   // Debe llamar al método para la acción correspondiente:
   // defend -> _defend; attack -> _attack; cast -> _cast
+  if (action === 'defend')
+    _defend();
+  if (action === 'attack')
+    _attack();
+  if (action === 'cast')
+    _cast();
+  
 };
 
 Battle.prototype._defend = function () {
@@ -215,6 +259,7 @@ Battle.prototype._informAction = function () {
 Battle.prototype._showTargets = function (onSelection) {
   // Toma ejemplo de la función ._showActions() para mostrar los identificadores
   // de los objetivos.
+
 
   this.options.current.on('chose', onSelection);
 };

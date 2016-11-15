@@ -50,18 +50,18 @@ CharactersView.prototype._getViewFor = function (character) {
   this._visibleFeatures.forEach(function(features){
     Object.defineProperty(view, features, {
       get: function () {
-     	return character[features];
+        return character[features];
       // ¿Cómo sería este getter para reflejar la propiedad del personaje?
       },
       set: function (value) {
-      	return false;
-       //value;
+        value = null;
+        return value;
       // ¿Y este setter para ignorar cualquier acción?
       },
       enumerable: true
     });
   })
- return view;
+  return view;
   // Acuérdate de devolver el objeto.
 };
 

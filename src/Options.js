@@ -21,10 +21,10 @@ Options.prototype.select = function (id) {
   // Haz que se emita un evento cuando seleccionamos una opción.
   var option = this.get(id);
   if (option === undefined){
-  	this.emit('choseError', 'option-does-not-exist', id);
+  this.emit('choseError','option-does-not-exist',id);
   }
   else
-  	this.emit('chose', id, option);
+  this.emit('chose',id,option);
 };
 
 module.exports = Options;
