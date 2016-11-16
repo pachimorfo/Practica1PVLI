@@ -5,7 +5,6 @@ var CharactersView = require('./CharactersView');
 var OptionsStack = require('./OptionsStack');
 var TurnList = require('./TurnList');
 var Effect = require('./items').Effect;
-
 var utils = require('./utils');
 var listToMap = utils.listToMap;
 var mapValues = utils.mapValues;
@@ -15,7 +14,6 @@ function Battle() {
   this._grimoires = {};
   this._charactersById = {};
   this._turns = new TurnList();
-
   this.options = new OptionsStack();
   this.characters = new CharactersView();
 }
@@ -33,7 +31,6 @@ Battle.prototype.setup = function (parties) {
   this._charactersById = this._extractCharactersById(parties);
   this._states = this._resetStates(this._charactersById);
   this._turns.reset(this._charactersById);
-
   this.characters.set(this._charactersById);
   this.options.clear();
 };
@@ -82,9 +79,9 @@ Battle.prototype._extractCharactersById = function (parties) {
 
   function assignParty(characters, party) {
     // Cambia la party de todos los personajes a la pasada como parámetro.
-    for (var name in characters){
-      characters[name].party = party;
-    }
+    characters.forEach(function (characters){
+      characters.party = party;
+    });
   }
 
   function useUniqueName(character) {
@@ -97,26 +94,20 @@ Battle.prototype._extractCharactersById = function (parties) {
       Si no está, añádelo con valor cero.
       Recupera el valor para nombre en el histograma de nombres.
       Si es 0, el identificador es el nombre.
-      Si es mayor que 0, el identificador es el nombre seguido de un espacio y el valor del histograma más uno.
+      Si es mayor que 0, el identificador es el nombre seguido de un espacio y
+      el valor del histograma más uno.
       Incrementa el valor del histograma en 1.
       Asigna al personaje ese identificador.
     */
-    for (var i = 0; i < partyIds.lenght; i++) {
-       if (partyIds[i] === character.party){
-          var party = partyIds[i];
-          for (var member in party){
-            var name = party[member].name;
-
-
-          }
-
-
-       }
+    var name = character.name;
+    if(idCounters[name] === undefined){
+    idCounters[name] = 0;
+    idCounters[name]++;
+    }else{
+    idCounters[name]++;
+    name += ' ' + idCounters[name];
     }
-    
-
-
-
+    return name;   
   }
 };
 
@@ -162,7 +153,7 @@ Battle.prototype._checkEndOfBattle = function () {
 
   function isAlive(character) {
     // Devuelve true si el personaje está vivo.
-    return (!character.isDead);
+    return !character.isDead();
   }
 
   function getCommonParty(characters) {
@@ -170,7 +161,7 @@ Battle.prototype._checkEndOfBattle = function () {
     // de que no haya común.
     var party = characters.party;
     for(var name in characters){
-      if(character[name].party !== party)
+      if(characters[name].party !== party)
         return null;
     }
     return party;
@@ -190,17 +181,15 @@ Battle.prototype._onAction = function (action) {
   this._action = {
     action: action,
     activeCharacterId: this._turns.activeCharacterId
-
-  };
-  // Debe llamar al método para la acción correspondiente:
+  }; 
   // defend -> _defend; attack -> _attack; cast -> _cast
   if (action === 'defend')
-    _defend();
+    this._defend();
   if (action === 'attack')
-    _attack();
+    this._attack();
   if (action === 'cast')
-    _cast();
-  
+    this._cast();
+    
 };
 
 Battle.prototype._defend = function () {
@@ -213,13 +202,22 @@ Battle.prototype._defend = function () {
 
 Battle.prototype._improveDefense = function (targetId) {
   var states = this._states[targetId];
+  if (!this._states[targetId].defense){//guardamos la defensa actual.
+    this._states[targetId].defense = this._charactersById[targetId].defense;
+  }
   // Implementa la mejora de la defensa del personaje.
+  var def = this._charactersById[targetId].defense;
+  def = Math.ceil(def * 1.1);
+  this._charactersById[targetId].defense = def;
+  return def;
 };
 
 Battle.prototype._restoreDefense = function (targetId) {
   // Restaura la defensa del personaje a cómo estaba antes de mejorarla.
   // Puedes utilizar el atributo this._states[targetId] para llevar tracking
   // de las defensas originales.
+  //Accedemos a la defensa original.
+   this._charactersById[targetId].defense = this._states[targetId].defense;
 };
 
 Battle.prototype._attack = function () {
