@@ -138,6 +138,7 @@ Battle.prototype._nextTurn = function () {
   if (this._stopped) { return; }
   setTimeout(function () {
     var endOfBattle = this._checkEndOfBattle();
+    //console.log('TE HE PILLADO CABRON', endOfBattle);
     if (endOfBattle) {
       this.emit('end', endOfBattle);
     } else {
@@ -153,6 +154,7 @@ Battle.prototype._checkEndOfBattle = function () {
   var allCharacters = mapValues(this._charactersById);
   var aliveCharacters = allCharacters.filter(isAlive);
   var commonParty = getCommonParty(aliveCharacters);
+  //console.log('ESTAS AQUIIIII???', commonParty);
   return commonParty ? { winner: commonParty } : null;
 
   function isAlive(character) {
@@ -164,11 +166,14 @@ Battle.prototype._checkEndOfBattle = function () {
     // Devuelve la party que todos los personajes tienen en común o null en caso
     // de que no haya común.
     var party = characters[0].party;
+    var i = 1; //El 0 ya lo hemos mirado.
     var common = true;
-    for(var name in characters){
-      if(characters[name].party !== party)
+    while(i < characters.length && common){
+      if(characters[i].party !== party)
         common = false;
+    i++;
     }
+    //console.log('eeeeeeeestasss', common);
     if(common)
       return party;
     else 
@@ -227,14 +232,14 @@ Battle.prototype._restoreDefense = function (targetId) {
   // Puedes utilizar el atributo this._states[targetId] para llevar tracking
   // de las defensas originales.
   //Accedemos a la defensa original.
-   this._charactersById[targetId].defense = this._states[targetId].defense;
+   this._charactersById[targetId].defense = this._states[targetId].defense || 0;
 };
 
 Battle.prototype._attack = function () {
   var self = this;
   self._showTargets(function onTarget(targetId) {
     // Implementa lo que pasa cuando se ha seleccionado el objetivo.
-    var actualCharct =self._action.activeCharacterId;
+    var actualCharct = self._action.activeCharacterId;
     self._action.targetId = targetId;
     self._action.effect = self._charactersById[actualCharct].weapon.effect;
     self._executeAction();
@@ -247,7 +252,7 @@ Battle.prototype._cast = function () {
   self._showScrolls(function onScroll(scrollId, scroll) {
     // Implementa lo que pasa cuando se ha seleccionado el hechizo.
     self._showTargets(function onTarget(targetId){
-    var actualCharct =self._action.activeCharacterId;
+    var actualCharct = self._action.activeCharacterId;
     self._action.targetId = targetId;
     self._action.scrollName = scrollId;
     self._action.effect = scroll.effect;
