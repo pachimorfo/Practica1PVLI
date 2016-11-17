@@ -8,12 +8,12 @@ function Character(name, features) {
 	// una propiedad.
 	this.party = null;
 	this._mp = features.mp || 0;
-	this.maxMp = features.maxMp || this._mp;
+	this.maxMp = features.maxMp || features.mp || 0;
 	this.initiative = features.initiative || 0;
 	this._defense = features.defense || 0;
 	this.weapon = features.weapon || null;
 	this._hp = features.hp || 0;
-	this.maxHp = features.maxHp || this._hp || 15;  
+	this.maxHp = features.maxHp || features.hp || 15;  
 }
 
 Character.prototype._immuneToEffect = ['name', 'weapon'];
@@ -24,39 +24,20 @@ Character.prototype.isDead = function () {
 };
 
 Character.prototype.applyEffect = function (effect, isAlly) {
-	// Implementa las reglas de aplicación de efecto para modificar las
-	// características del personaje. Recuerda devolver true o false según
-	// si el efecto se ha aplicado o no.
-	/*if(!isAlly){
-		var aleatorio = dice.d100();
-		if(aleatorio <= this._defense)
-		return false;
-	}
-	//Si es aliado hace el efecto directamente, si no lo es,
-	// miramos el aleatorio con su defensa, si es menor, 
-	// no aplicamos el efecto, si es mayor, directamente lo hace.
-	/*for(var subefecto in effect){
-		this[subefecto] += effect[subefecto];
-		if(this[subefecto] < 0)
-			this[subefecto] = 0;
-	}
-	if(this._hp > this.maxHp)
-		this._hp = this.maxHp;
-	if(this._mp > this.maxMp)
-		this._mp = this.maxMp;
-	return true;*/
+  var itsapplied = true;
   if (!isAlly){
     var aleatorio = dice.d100();
-    if (aleatorio <= this.defense) return false;
+    itsapplied = (aleatorio >= this.defense);
   }
-
-  this.initiative += effect.initiative;
-  this.defense += effect.defense;
-  this.hp += effect.hp;
-  this.maxHp += effect.maxHp;
-  this.mp += effect.mp;
-  this.maxMp += effect.maxMp;
-  return true;
+  if(itsapplied || isAlly){
+  this.initiative += effect.initiative || 0;
+  this.defense += effect.defense || 0;
+  this.hp += effect.hp || 0;
+  this.maxHp += effect.maxHp || 0;
+  this.mp += effect.mp || 0;
+  this.maxMp += effect.maxMp || 0;
+	}
+  return itsapplied;
 };
 
 Object.defineProperty(Character.prototype, 'mp', {

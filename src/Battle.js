@@ -79,8 +79,8 @@ Battle.prototype._extractCharactersById = function (parties) {
 
   function assignParty(characters, party) {
     // Cambia la party de todos los personajes a la pasada como parámetro.
-    characters.forEach(function (characters){
-      characters.party = party;
+    characters.forEach(function (character){
+      character.party = party;
     });
   }
 
@@ -100,14 +100,14 @@ Battle.prototype._extractCharactersById = function (parties) {
       Asigna al personaje ese identificador.
     */
     var name = character.name;
-    if(idCounters[name] === undefined){
+    if(!idCounters.hasOwnProperty(name)){
     idCounters[name] = 0;
     idCounters[name]++;
+    return name;
     }else{
-    idCounters[name]++;
-    name += ' ' + idCounters[name];
+    idCounters[name] ++;
+    return name + ' ' + (idCounters[name]);
     }
-    return name;   
   }
 };
 
@@ -121,6 +121,7 @@ Battle.prototype._resetStates = function (charactersById) {
 Battle.prototype._getCharIdsByParty = function () {
   var charIdsByParty = {};
   var charactersById = this._charactersById;
+  
   Object.keys(charactersById).forEach(function (charId) {
     var party = charactersById[charId].party;
     if (!charIdsByParty[party]) {
@@ -128,10 +129,12 @@ Battle.prototype._getCharIdsByParty = function () {
     }
     charIdsByParty[party].push(charId);
   });
+
   return charIdsByParty;
 };
 
 Battle.prototype._nextTurn = function () {
+  
   if (this._stopped) { return; }
   setTimeout(function () {
     var endOfBattle = this._checkEndOfBattle();
@@ -146,6 +149,7 @@ Battle.prototype._nextTurn = function () {
 };
 
 Battle.prototype._checkEndOfBattle = function () {
+  
   var allCharacters = mapValues(this._charactersById);
   var aliveCharacters = allCharacters.filter(isAlive);
   var commonParty = getCommonParty(aliveCharacters);
@@ -159,7 +163,7 @@ Battle.prototype._checkEndOfBattle = function () {
   function getCommonParty(characters) {
     // Devuelve la party que todos los personajes tienen en común o null en caso
     // de que no haya común.
-    var party = characters.party;
+    var party = characters[0].party;
     var common = true;
     for(var name in characters){
       if(characters[name].party !== party)
@@ -198,21 +202,24 @@ Battle.prototype._onAction = function (action) {
 Battle.prototype._defend = function () {
   var activeCharacterId = this._action.activeCharacterId;
   var newDefense = this._improveDefense(activeCharacterId);
+  
   this._action.targetId = this._action.activeCharacterId;
+
   this._action.newDefense = newDefense;
   this._executeAction();
 };
 
 Battle.prototype._improveDefense = function (targetId) {
-  var states = this._states[targetId];
+  
   if (!this._states[targetId].defense){//guardamos la defensa actual.
     this._states[targetId].defense = this._charactersById[targetId].defense;
   }
+  //console.log('OBJETIIIIVOOOO->>>>>>>>>>', targetId);
   // Implementa la mejora de la defensa del personaje.
   var def = this._charactersById[targetId].defense;
   def = Math.ceil(def * 1.1);
   this._charactersById[targetId].defense = def;
-  return def;
+  return (def);
 };
 
 Battle.prototype._restoreDefense = function (targetId) {
@@ -260,7 +267,6 @@ Battle.prototype._executeAction = function () {
 
   var wasSuccessful = targetCharacter.applyEffect(effect, areAllies);
   this._action.success = wasSuccessful;
-
   this._informAction();
   this._nextTurn();
 };
@@ -289,7 +295,7 @@ Battle.prototype._showScrolls = function (onSelection) {
 
   for (var obj in this._grimoires[party]){
     if(this._charactersById[this._action.activeCharacterId].mp >= this._grimoires[party][obj].cost)
-      scrolls[obj] = this._grimories[party][obj];
+      scrolls[obj] = this._grimoires[party][obj];
   }
   this.options.current = scrolls;
   this.options.current.on('chose', onSelection);
