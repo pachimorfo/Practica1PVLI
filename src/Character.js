@@ -27,15 +27,15 @@ Character.prototype.applyEffect = function (effect, isAlly) {
 	// Implementa las reglas de aplicación de efecto para modificar las
 	// características del personaje. Recuerda devolver true o false según
 	// si el efecto se ha aplicado o no.
-	if(!isAlly){
+	/*if(!isAlly){
 		var aleatorio = dice.d100();
 		if(aleatorio <= this._defense)
-			return false;
+		return false;
 	}
 	//Si es aliado hace el efecto directamente, si no lo es,
 	// miramos el aleatorio con su defensa, si es menor, 
 	// no aplicamos el efecto, si es mayor, directamente lo hace.
-	for(var subefecto in effect){
+	/*for(var subefecto in effect){
 		this[subefecto] += effect[subefecto];
 		if(this[subefecto] < 0)
 			this[subefecto] = 0;
@@ -44,7 +44,19 @@ Character.prototype.applyEffect = function (effect, isAlly) {
 		this._hp = this.maxHp;
 	if(this._mp > this.maxMp)
 		this._mp = this.maxMp;
-	return true;
+	return true;*/
+  if (!isAlly){
+    var aleatorio = dice.d100();
+    if (aleatorio <= this.defense) return false;
+  }
+
+  this.initiative += effect.initiative;
+  this.defense += effect.defense;
+  this.hp += effect.hp;
+  this.maxHp += effect.maxHp;
+  this.mp += effect.mp;
+  this.maxMp += effect.maxMp;
+  return true;
 };
 
 Object.defineProperty(Character.prototype, 'mp', {
